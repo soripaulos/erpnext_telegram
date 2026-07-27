@@ -1,5 +1,7 @@
 # Erpnext Telegram Integration And Notifications
 
+> **Compatible with Frappe / ERPNext v15** (this branch). For v14 use the `version-14` branch.
+
 Telegram Integration and Extra Notifications For Frappe & Erpnext to sending fast notifications for more productivity.
 
 
@@ -24,24 +26,22 @@ Telegram Integration and Extra Notifications For Frappe & Erpnext to sending fas
 
 # How to Install
 
-1. `./env/bin/pip install python-telegram-bot --upgrade` "*This command is necessary to install the python-telegram-bot into bench environment. Otherwise, the pip3/pip command will install it in the python environment"*
+1. `bench get-app erpnext_telegram_integration https://github.com/soripaulos/erpnext_telegram.git --branch version-15`
 
-2. `bench get-app erpnext_telegram_integration https://github.com/yrestom/erpnext_telegram.git`
+2. `bench --site [your.site.name] install-app erpnext_telegram_integration`
 
-3. `bench --site [your.site.name] install-app erpnext_telegram_integration`
+3. `bench build`
 
-4. `bench build`
+4. `bench restart`
 
-5. `bench restart`
-
-6. Create a new Telegram bot in `BotFather`
+5. Create a new Telegram bot in `BotFather`
 
    For more reference :
 
    - [Bots: An introduction for developers](https://core.telegram.org/bots)
    - [Learn to build your first bot in Telegram with Python](https://www.freecodecamp.org/news/learn-to-build-your-first-bot-in-telegram-with-python-4c99526765e4/)
 
-7. Get Telegram Bot Token from `BotFather`
+6. Get Telegram Bot Token from `BotFather`
 
 
 
@@ -108,9 +108,9 @@ When the Date Notification is trigger it will send an email to the related user 
 
 ## Dependencies
 
-1. [Frappe](https://github.com/frappe/frappe) Version 12+
-2. Python Version  3+
-3. [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
+1. [Frappe](https://github.com/frappe/frappe) Version 15
+2. Python Version 3.10+
+3. `requests` and `beautifulsoup4` (installed automatically from requirements.txt)
 
 
 
