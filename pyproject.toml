@@ -1,0 +1,20 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "erpnext_telegram_integration"
+description = "Telegram Integration For Frappe - Erpnext"
+readme = "README.md"
+dynamic = ["version"]
+license = {text = "MIT"}
+authors = [
+    {name = "Youssef Restom", email = "youssef@totrox.com"},
+]
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+]
+
+[tool.flit.module]
+name = "erpnext_telegram_integration"
