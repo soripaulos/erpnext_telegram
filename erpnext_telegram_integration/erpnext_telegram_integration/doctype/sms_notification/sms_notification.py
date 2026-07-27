@@ -63,12 +63,12 @@ class SMSNotification(Document):
                     f.write(
                         """from __future__ import unicode_literals
 
-								import frappe
+							import frappe
 
-								def get_context(context):
-									# do your magic here
-									pass
-								"""
+							def get_context(context):
+								# do your magic here
+								pass
+							"""
                     )
 
     def validate_standard(self):
