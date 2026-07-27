@@ -4,8 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
-import telegram
-import asyncio
+import requests
 from frappe.model.document import Document
 from frappe.utils import get_url_to_form
 from frappe.utils.data import quoted
@@ -17,6 +16,20 @@ class TelegramSettings(Document):
 	pass
 
 
+def send_telegram_message(telegram_token, telegram_chat_id, message):
+	"""Send a message via Telegram's HTTP Bot API directly.
+
+	Avoids depending on the python-telegram-bot package, whose async API
+	(v20+) and version conflicts with other bench apps break on Frappe v15.
+	"""
+	response = requests.post(
+		f"https://api.telegram.org/bot{telegram_token}/sendMessage",
+		json={"chat_id": telegram_chat_id, "text": message},
+		timeout=30,
+	)
+	response.raise_for_status()
+	return response.json()
+
 
 @frappe.whitelist()
 def send_to_telegram(telegram_user, message, reference_doctype=None, reference_name=None, attachment=None):
@@ -25,14 +38,13 @@ def send_to_telegram(telegram_user, message, reference_doctype=None, reference_n
 	telegram_chat_id = frappe.db.get_value('Telegram User Settings', telegram_user,'telegram_chat_id')
 	telegram_settings = frappe.db.get_value('Telegram User Settings', telegram_user,'telegram_settings')
 	telegram_token = frappe.db.get_value('Telegram Settings', telegram_settings,'telegram_token')
-	bot = telegram.Bot(token=telegram_token)
 
 
 	if reference_doctype and reference_name:
 		doc_url = get_url_to_form(reference_doctype, reference_name)
 		telegram_doc_link = _("See the document at {0}").format(doc_url)
 		if message:
-			soup = BeautifulSoup(message)
+			soup = BeautifulSoup(message, "html.parser")
 			message = soup.get_text('\n') + space + str(telegram_doc_link)
 			if type(attachment) is str:
 				attachment = int(attachment)
@@ -42,11 +54,11 @@ def send_to_telegram(telegram_user, message, reference_doctype=None, reference_n
 			if attachment == 1:
 				attachment_url =get_url_for_telegram(reference_doctype, reference_name)
 				message = message + space +  attachment_url
-			asyncio.run(bot.send_message(chat_id=telegram_chat_id, text=message))
-		
+			send_telegram_message(telegram_token, telegram_chat_id, message)
+
 	else:
 		message = space + str(message) + space
-		asyncio.run(bot.send_message(chat_id=telegram_chat_id, text=message))
+		send_telegram_message(telegram_token, telegram_chat_id, message)
 
 
 
@@ -58,5 +70,3 @@ def get_url_for_telegram(doctype, name):
 		name=quoted(name),
 		key=doc.get_signature()
 	)
-
-
